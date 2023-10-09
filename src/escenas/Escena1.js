@@ -5,6 +5,8 @@ class Escena1 extends Phaser.Scene {
         this.platforms = null;
         this.scoreText = "";
         this.score = 0;
+
+        this.vidaText = "";
         this.vida = 100;
     }
 
@@ -35,14 +37,30 @@ class Escena1 extends Phaser.Scene {
         this.gameMusic.play();
 
         this.add.image(400, 300, 'sky');
-
-
-
         //--------------------------------------------//
         // this.add.image(400, 300, 'star');    crea una estrella estatica en el escenario 
         this.player = this.physics.add.sprite(100, 100, 'nave');
         this.player.body.allowGravity = false;
         //-------------------------//
+        
+        //this.enemy=this.physics.add.staticGroup();
+        //this.enemy.create(258,250,'enemy')
+        //this.enemy=this.physics.add.image(600,300,"enemy");
+
+        /*Metodo para repetir eventos */
+        //this.crearEnemigos();
+        this.time.addEvent({
+            delay:3000,
+            callback:this.crearEnemigos,
+            callbackScope:this,
+            repeat:-1
+        });
+        
+
+        //this.enemy = this.physics.add.group();
+        //this.physics.add.collider(this.player, this.enemy);
+        //this.physics.add.collider(this.player, this.enemy, this.collectStar, null, this);
+        //this.physics.add.overlap(this.player, this.enemy, this.collectStar, null, this);
         // this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
         //----/
@@ -77,24 +95,21 @@ class Escena1 extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
 
-        this.enemys = this.physics.add.group();
-
-
+        //this.enemys = this.physics.add.group();
         //Habilita las colisiones de las entrellas con la plataforma
-        // this.physics.add.collider(this.stars, this.platforms);
+        //this.physics.add.collider(this.stars, this.enemy);
 
-        //Choque entre las estrellas y el jugador
-        // this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+        
 
         //Para controlar el puntaje
-        this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
-        this.vida = this.add.text(16,50,'vida: 100',{fontSize : '32px',fill: '#000'});
+        //this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+        //se crea el puntaje 
+        this.vidaText = this.add.text(16,50,'Vida: 100',{fontSize : '32px',fill: '#000'});
         //Para agregar las bombas
         //this.bombs = this.physics.add.group();
         //this.physics.add.collider(this.bombs, this.platforms);
         //this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
-
+        
     }
 
     //------------------------//
@@ -147,11 +162,43 @@ class Escena1 extends Phaser.Scene {
             this.scene.start('Escena2');
             //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
         }
+        
+        
+    }
+
+    crearEnemigos(){
+
+        if (!this.enemiesGroup) {
+            this.enemiesGroup = this.physics.add.group();
+        }
+    
+        // Creamos enemigos
+        for (let i = 0; i < 10; i++) {
+            let enemyX = Phaser.Math.Between(650, 750);
+            let enemyY = Phaser.Math.Between(25, 550);
+    
+            let enemy = this.enemiesGroup.create(enemyX, enemyY, 'enemy');
+            enemy.setVelocityX(-100);
+    
+            // Establecemos las colisiones y eventos para cada enemigo
+            this.physics.add.overlap(this.player, enemy, this.ColisionEnemy, null, this);
+    
+            enemy.checkWorldBounds = true;
+            // Hace que el enemigo se destruya cuando sale de la pantalla
+            enemy.outOfBoundsKill = true; 
+        }
+       
     }
 
     //Colisión entre el jugador y las estrellas
-    collectStar(player, star) {
-        star.disableBody(true, true);
+    ColisionEnemy(player,enemy) {
+
+        console.log("colision");
+        /*al detectar colision entre player y enemy, desaparecen enemy */
+        enemy.disableBody(true,true);
+        this.vida -= 10;
+        this.vidaText.setText('Vida: ' + this.vida);
+        /*star.disableBody(true, true);
         this.score += 10;
         this.scoreText.setText('Score: ' + this.score);
 
@@ -165,11 +212,10 @@ class Escena1 extends Phaser.Scene {
             bomb.setBounce(1);
             bomb.setCollideWorldBounds(true);
             bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-        }
-
+        }*/
     }
 
-
+    
 
     hitBomb(player, bomb) {
         this.physics.pause();
