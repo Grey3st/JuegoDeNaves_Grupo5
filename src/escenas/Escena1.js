@@ -110,27 +110,34 @@ class Escena1 extends Phaser.Scene {
 
         particles.startFollow(this.player);
 
+        //4 direcciones de la nave
 
-
-
-
-        if (this.cursors.left.isDown) {
-            this.player.setVelocityX(-160);
-            //this.player.setVelocityY(0);
-            //this.player.x-=10;
-            this.player.anims.play('left', true);
-        }
-        else if (this.cursors.right.isDown) {
-            this.player.setVelocityX(160);
-            this.player.anims.play('right', true);
-        }
         if (this.cursors.up.isDown) {
             this.player.setVelocityY(-160);
             this.player.setVelocityX(0);
-            //this.player.x-=10;
             this.player.anims.play('up', true);
         }
-        else if (this.cursors.down.isDown) {
+        if (this.cursors.down.isDown) {
+            this.player.setVelocityY(160);
+            this.player.setVelocityX(0);
+            this.player.anims.play('down', true);
+        }
+        if (this.cursors.left.isDown) {
+            this.player.setVelocityX(-160);
+            this.player.setVelocityY(0);
+            this.player.anims.play('left', true);
+        }
+        if (this.cursors.right.isDown) {
+            this.player.setVelocityX(160);
+            this.player.setVelocityY(0);
+            this.player.anims.play('right', true);
+        }
+        //4 diagonales de la nave
+        if (this.cursors.up.isDown && (this.cursors.right.isDown || this.cursors.left.isDown)) {
+            this.player.setVelocityY(-160);
+            this.player.anims.play('up', true);
+        }
+        if (this.cursors.down.isDown && (this.cursors.right.isDown || this.cursors.left.isDown)) {
             this.player.setVelocityY(160);
             this.player.anims.play('down', true);
         }
