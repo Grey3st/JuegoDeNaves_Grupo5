@@ -26,7 +26,6 @@ class Escena1 extends Phaser.Scene {
         // crea el disparo 
         this.input.keyboard.on('keydown', (event) => {
             if (event.keyCode === 32) {
-
                 this.shoot();  // llama al disparo al apretar la barra espaciadora 
             }
         });
@@ -157,9 +156,16 @@ class Escena1 extends Phaser.Scene {
             this.player.anims.play('down', true);
         }
 
-        if (this.score == 20) {
-            this.gameMusic.destroy();
+        //si llega a puntaje 100 pasa de nivel
+        if (this.score == 100) {
             this.scene.start('Escena2');
+            //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
+        }
+
+        //si pierde todas las vidas
+        if (this.vida == 0) {
+            this.gameMusic.destroy();
+            this.scene.start('FinDelJuego');
             //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
         }
         
@@ -200,19 +206,22 @@ class Escena1 extends Phaser.Scene {
         this.vidaText.setText('Vida: ' + this.vida);
         /*star.disableBody(true, true);
         this.score += 10;
-        this.scoreText.setText('Score: ' + this.score);
+        this.scoreText.setText('Score: ' + this.score);*/
 
-        //Para las bombas
-        if (this.stars.countActive(true) === 0) {
-            this.stars.children.iterate(function (child) {
-                child.enableBody(true, child.x, 0, true, true);
-            });
-            let x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400)
-            let bomb = this.bombs.create(x, 16, 'bomb');
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-        }*/
+    }
+
+    //Colisión entre la bala y el enemigo
+    ColisionEnemyBala(bala,enemy) {
+
+        console.log("colision bala");
+        /*al detectar colision entre la bala y el enemigo, desaparecen enemy */
+        enemy.disableBody(true,true);
+
+         /*
+        this.score += 10;
+        this.scoreText.setText('Score: ' + this.score);
+            */
+
     }
 
     
@@ -222,7 +231,6 @@ class Escena1 extends Phaser.Scene {
         player.setTint(0xff0000);
         player.anims.play('turn');
         this.scene.start('FinDelJuego')   // llama a otra escena 
-
     }
 
    //colision entre el jugador y el enemigo 
@@ -233,7 +241,7 @@ class Escena1 extends Phaser.Scene {
 
 
     // funcion de disparo 
-
+    //faltaria agregar la funcion de colision entre bala y enemigo
     shoot() {
 
         let bala = this.physics.add.sprite(this.player.x, this.player.y, 'disparo')
@@ -243,7 +251,7 @@ class Escena1 extends Phaser.Scene {
 
         bala.setVelocity(velocidadBala, 0);
 
-        bala.setCollideWorldBounds(false)
+        bala.setCollideWorldBounds(false);
 
     }
 
