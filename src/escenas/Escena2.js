@@ -1,18 +1,18 @@
+class Escena2 extends Phaser.Scene {
 
-class Escena2 extends Phaser.Scene{
-    
     constructor() {
         super({ key: "Escena2" });
         this.platforms = null;
         this.scoreText = "";
-        this.score = 0;
-
+        this.score = 200;
         this.vidaText = "";
-        this.vida = 50; //empieza con menos vida
+        this.vida = 100;
     }
-
+    init(data){
+        this.score = data.score;
+    }
     preload() {
-        this.load.image('sky', '../public/img/sky.png');
+        this.load.image('sky', '../public/img/fondoInicio.png');
         this.load.image('enemy', '../public/img/enemy.png');
         this.load.image('red', '../public/img/red.png');
         this.load.image('shoot', '../public/img/shoot.png');
@@ -31,16 +31,23 @@ class Escena2 extends Phaser.Scene{
             }
         });
 
-
-
+    
         this.gameMusic = this.sound.add('gameMusic');
         this.gameMusic.play();
 
         this.add.image(400, 300, 'sky');
+        //--------------------------------------------//
+        // this.add.image(400, 300, 'star');    crea una estrella estatica en el escenario 
         this.player = this.physics.add.sprite(100, 100, 'nave');
         this.player.body.allowGravity = false;
+        //-------------------------//
         
- 
+        //this.enemy=this.physics.add.staticGroup();
+        //this.enemy.create(258,250,'enemy')
+        //this.enemy=this.physics.add.image(600,300,"enemy");
+
+        /*Metodo para repetir eventos */
+        //this.crearEnemigos();
         this.time.addEvent({
             delay:3000,
             callback:this.crearEnemigos,
@@ -49,8 +56,13 @@ class Escena2 extends Phaser.Scene{
         });
         
 
-      
+        //this.enemy = this.physics.add.group();
+        //this.physics.add.collider(this.player, this.enemy);
+        //this.physics.add.collider(this.player, this.enemy, this.collectStar, null, this);
+        //this.physics.add.overlap(this.player, this.enemy, this.collectStar, null, this);
+        // this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
+        //----/
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('nave', { start: 0, end: 0 }),
@@ -76,27 +88,62 @@ class Escena2 extends Phaser.Scene{
             repeat: -1
         });
 
-      
+        // el jugador tiene colision con las plataformas 
+        this.physics.add.collider(this.player, this.platforms);
         // se mueve con el teclado  el jugador
         this.cursors = this.input.keyboard.createCursorKeys();
+
         
+        
+        //this.enemys = this.physics.add.group();
+        //Habilita las colisiones de las entrellas con la plataforma
+        //this.physics.add.collider(this.stars, this.enemy);
+
+        
+
+        //Para controlar el puntaje
+        this.scoreText = this.add.text(16, 16, 'score: '+ this.score, { fontSize: '32px', fill: '#000' });
         //se crea el puntaje 
-        this.vidaText = this.add.text(16,50,'Vida: 50',{fontSize : '32px',fill: '#000'});
+        this.vidaText = this.add.text(16,50,'Vida: 100',{fontSize : '32px',fill: '#000'});
+        //Para agregar las bombas
+        //this.bombs = this.physics.add.group();
+        //this.physics.add.collider(this.bombs, this.platforms);
+        //this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+        
+        
+
         
     }
 
     //------------------------//
     update() {
 
-        let particles = this.add.particles(-10, 0, 'red', {
+        
+        //si llega a puntaje 100 pasa de nivel
+       // if (this.score == 400) {
+         //   this.scene.start('Escena2');
+           // this.scene.start('Escena2',{score:this.score});
+            //console.log("cambio escena");
+       //} 
 
-            speed: 100,
-            angle: { min: 150, max: 210 },
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        });
+                //si pierde todas las vidas
+                if (this.vida == 0) {
+            
+                    this.scene.start('FinDelJuego');
+                    this.gameMusic.destroy();
+                    console.log("game over");
+                    //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
+                }
 
-        particles.startFollow(this.player);
+      //  let particles = this.add.particles(-10, 0, 'red', {
+
+        //    speed: 100,
+          //  angle: { min: 150, max: 210 },
+           // scale: { start: 1, end: 0 },
+           // blendMode: 'ADD'
+        //});
+
+        //particles.startFollow(this.player);
 
         //4 direcciones de la nave
 
@@ -130,29 +177,27 @@ class Escena2 extends Phaser.Scene{
             this.player.anims.play('down', true);
         }
 
-        //si pierde todas las vidas
-        if (this.vida == 0) {
-            this.gameMusic.destroy();
-            this.scene.start('FinDelJuego');
-            //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
-        }
-        
         
     }
 
     crearEnemigos(){
-
+        let enemy;
         if (!this.enemiesGroup) {
             this.enemiesGroup = this.physics.add.group();
         }
-    
+        let velocidad = -200;
         // Creamos enemigos
-        for (let i = 0; i < 12; i++) {
-            let enemyX = Phaser.Math.Between(650, 750);
+        for (let i = 0; i < 10; i++) {
+            let enemyX = Phaser.Math.Between(800, 1100);
             let enemyY = Phaser.Math.Between(25, 550);
-    
-            let enemy = this.enemiesGroup.create(enemyX, enemyY, 'enemy');
-            enemy.setVelocityX(-70);
+            
+            enemy = this.enemiesGroup.create(enemyX, enemyY, 'enemy');
+
+            for (let j = 0; j < 3; j++) {
+                enemy.setVelocityX(velocidad);
+                velocidad -=10;
+            }
+            
     
             // Establecemos las colisiones y eventos para cada enemigo
             this.physics.add.overlap(this.player, enemy, this.ColisionEnemy, null, this);
@@ -161,10 +206,11 @@ class Escena2 extends Phaser.Scene{
             // Hace que el enemigo se destruya cuando sale de la pantalla
             enemy.outOfBoundsKill = true; 
         }
+
        
     }
 
-    //Colisión entre el jugador y las naves
+    //Colisión entre el jugador y las estrellas
     ColisionEnemy(player,enemy) {
 
         console.log("colision");
@@ -178,42 +224,61 @@ class Escena2 extends Phaser.Scene{
 
     }
 
-    //Colisión entre la bala y el enemigo
-    ColisionEnemyBala(bala,enemy) {
-
-        console.log("colision bala");
-        /*al detectar colision entre la bala y el enemigo, desaparecen enemy */
-        enemy.disableBody(true,true);
-        /*
-        this.score += 10;
-        this.scoreText.setText('Score: ' + this.score);
-            */
-    }
-
-    
-
-    hitBomb(player, bomb) {
-        this.physics.pause();
-        player.setTint(0xff0000);
-        player.anims.play('turn');
-        this.scene.start('FinDelJuego')   // llama a otra escena 
-    }
-
-
 
     // funcion de disparo 
-
+    //faltaria agregar la funcion de colision entre bala y enemigo
     shoot() {
-
-        let bala = this.physics.add.sprite(this.player.x, this.player.y, 'disparo')
+        
+        if (!this.balaGroup) {
+            this.balaGroup=this.physics.add.group();
+        }
+        
+        let bala = this.balaGroup.create(this.player.x, this.player.y, 'disparo')
 
         let velocidadBala = 300;
         bala.setScale(0.05);
 
         bala.setVelocity(velocidadBala, 0);
 
-        bala.setCollideWorldBounds(false);
+        //bala.setCollideWorldBounds(false);
+        //this.physics.add.overlap(bala, this.enemiesGroup, this.ColisionEnemyBala, null, this);
 
+        this.physics.add.overlap(bala, this.enemiesGroup, this.ColisionEnemyBala, null, this)
+        //console.log("Disparo realizado");
+        
+        
+    
+    }
+    //Colisión entre la bala y el enemigo
+    ColisionEnemyBala(bala,enemy) {
+        
+    // detecta colision bala enemigo y elimina bala
+    bala.disableBody(true, true);
+
+    // detecta colision bala enemigo y elimina enemy
+    enemy.disableBody(true, true);
+
+    // elimina un enemigo de enemiesGroup
+    this.enemiesGroup.remove(enemy);
+        console.log("colision2");
+        this.score += 10;
+        //this.enemiesGroup.disableBody(true, true);
+        
+        
+
+        
+        /*al detectar colision entre la bala y el enemigo, desaparecen enemy */
+        //enemy.disableBody(true,true);
+
+
+        //enemy.checkWorldBounds = true;
+        // Hace que el enemigo se destruya cuando sale de la pantalla
+        //enemy.outOfBoundsKill = true; 
+
+         
+        this.score += 10;
+        this.scoreText.setText('Score: ' + this.score);
+        
     }
 
 }

@@ -6,9 +6,12 @@ class FinDelJuego extends Phaser.Scene {
     preload() {
         this.load.image('fondo', "../public/img/fondoInicio.png")
         this.load.image('fin', "../public/img/finJuego.png")
+        this.load.audio('gameOver', '../public/sound/gameOverMusic.mp3');
     }
 
     create() {
+        this.gameOver = this.sound.add('gameOver');
+        this.gameOver.play();
         let fondo = this.add.image(0, 0, 'fondo');
         fondo.setOrigin(0, 0);
         //--------//
@@ -17,7 +20,6 @@ class FinDelJuego extends Phaser.Scene {
         //---//
         let fin = this.add.image(centerX, centerY, 'fin');
         fin.setScale(0.2)
-        console.log("Pal lobby malo *c rie en brazuca*")
     }
 
 }
