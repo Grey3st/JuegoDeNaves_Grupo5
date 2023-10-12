@@ -30,8 +30,7 @@ class Escena1 extends Phaser.Scene {
             }
         });
 
-
-
+    
         this.gameMusic = this.sound.add('gameMusic');
         this.gameMusic.play();
 
@@ -93,7 +92,8 @@ class Escena1 extends Phaser.Scene {
         // se mueve con el teclado  el jugador
         this.cursors = this.input.keyboard.createCursorKeys();
 
-
+        
+        
         //this.enemys = this.physics.add.group();
         //Habilita las colisiones de las entrellas con la plataforma
         //this.physics.add.collider(this.stars, this.enemy);
@@ -108,6 +108,9 @@ class Escena1 extends Phaser.Scene {
         //this.bombs = this.physics.add.group();
         //this.physics.add.collider(this.bombs, this.platforms);
         //this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+        
+        
+
         
     }
 
@@ -170,10 +173,11 @@ class Escena1 extends Phaser.Scene {
         }
         
         
+        
     }
 
     crearEnemigos(){
-
+        let enemy;
         if (!this.enemiesGroup) {
             this.enemiesGroup = this.physics.add.group();
         }
@@ -183,7 +187,7 @@ class Escena1 extends Phaser.Scene {
             let enemyX = Phaser.Math.Between(650, 750);
             let enemyY = Phaser.Math.Between(25, 550);
     
-            let enemy = this.enemiesGroup.create(enemyX, enemyY, 'enemy');
+            enemy = this.enemiesGroup.create(enemyX, enemyY, 'enemy');
             enemy.setVelocityX(-100);
     
             // Establecemos las colisiones y eventos para cada enemigo
@@ -193,6 +197,7 @@ class Escena1 extends Phaser.Scene {
             // Hace que el enemigo se destruya cuando sale de la pantalla
             enemy.outOfBoundsKill = true; 
         }
+
        
     }
 
@@ -210,22 +215,7 @@ class Escena1 extends Phaser.Scene {
 
     }
 
-    //Colisión entre la bala y el enemigo
-    ColisionEnemyBala(bala,enemy) {
-
-        console.log("colision bala");
-        /*al detectar colision entre la bala y el enemigo, desaparecen enemy */
-        enemy.disableBody(true,true);
-
-         /*
-        this.score += 10;
-        this.scoreText.setText('Score: ' + this.score);
-            */
-
-    }
-
     
-
     hitBomb(player, bomb) {
         this.physics.pause();
         player.setTint(0xff0000);
@@ -240,19 +230,69 @@ class Escena1 extends Phaser.Scene {
     }
 
 
+
+
+
+
+
+ 
+
+
     // funcion de disparo 
     //faltaria agregar la funcion de colision entre bala y enemigo
     shoot() {
+        
+        if (!this.balaGroup) {
+            this.balaGroup=this.physics.add.group();
+        }
 
-        let bala = this.physics.add.sprite(this.player.x, this.player.y, 'disparo')
+        
+        let bala = this.balaGroup.create(this.player.x, this.player.y, 'disparo')
 
         let velocidadBala = 300;
         bala.setScale(0.05);
 
         bala.setVelocity(velocidadBala, 0);
 
-        bala.setCollideWorldBounds(false);
+        //bala.setCollideWorldBounds(false);
+        //this.physics.add.overlap(bala, this.enemiesGroup, this.ColisionEnemyBala, null, this);
 
+        this.physics.add.overlap(bala, this.enemiesGroup, this.ColisionEnemyBala, null, this)
+        //console.log("Disparo realizado");
+        
+        
+    
+    }
+    //Colisión entre la bala y el enemigo
+    ColisionEnemyBala(bala,enemy) {
+        
+    // detecta colision bala enemigo y elimina bala
+    bala.disableBody(true, true);
+
+    // detecta colision bala enemigo y elimina enemy
+    enemy.disableBody(true, true);
+
+    // elimina un enemigo de enemiesGroup
+    this.enemiesGroup.remove(enemy);
+        console.log("colision2");
+        
+        //this.enemiesGroup.disableBody(true, true);
+        
+        
+
+        
+        /*al detectar colision entre la bala y el enemigo, desaparecen enemy */
+        //enemy.disableBody(true,true);
+
+
+        //enemy.checkWorldBounds = true;
+        // Hace que el enemigo se destruya cuando sale de la pantalla
+        //enemy.outOfBoundsKill = true; 
+
+         /*
+        this.score += 10;
+        this.scoreText.setText('Score: ' + this.score);
+            */
     }
 
 }
