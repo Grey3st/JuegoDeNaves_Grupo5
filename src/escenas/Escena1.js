@@ -55,6 +55,7 @@ class Escena1 extends Phaser.Scene {
         });
         
 
+
         //this.enemy = this.physics.add.group();
         //this.physics.add.collider(this.player, this.enemy);
         //this.physics.add.collider(this.player, this.enemy, this.collectStar, null, this);
@@ -101,7 +102,7 @@ class Escena1 extends Phaser.Scene {
         
 
         //Para controlar el puntaje
-        //this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+        this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
         //se crea el puntaje 
         this.vidaText = this.add.text(16,50,'Vida: 100',{fontSize : '32px',fill: '#000'});
         //Para agregar las bombas
@@ -117,15 +118,31 @@ class Escena1 extends Phaser.Scene {
     //------------------------//
     update() {
 
-        let particles = this.add.particles(-10, 0, 'red', {
+                        //si llega a puntaje 100 pasa de nivel
+                        if (this.score == 200) {
+                            this.gameMusic.destroy();
+                            this.scene.start('Escena2',{score:this.score});
+                            console.log("cambio escena");
+                       } 
 
-            speed: 100,
-            angle: { min: 150, max: 210 },
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        });
+                //si pierde todas las vidas
+                if (this.vida == 0) {
+            
+                    this.scene.start('FinDelJuego');
+                    this.gameMusic.destroy();
+                    console.log("game over");
+                    //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
+                }
 
-        particles.startFollow(this.player);
+        //let particles = this.add.particles(-10, 0, 'red', {
+
+          //  speed: 100,
+            //angle: { min: 150, max: 210 },
+           // scale: { start: 1, end: 0 },
+            //blendMode: 'ADD'
+        //});
+
+        //particles.startFollow(this.player);
 
         //4 direcciones de la nave
 
@@ -159,20 +176,7 @@ class Escena1 extends Phaser.Scene {
             this.player.anims.play('down', true);
         }
 
-        //si llega a puntaje 100 pasa de nivel
-        if (this.score == 100) {
-            this.scene.start('Escena2');
-            //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
-        }
 
-        //si pierde todas las vidas
-        if (this.vida == 0) {
-            this.gameMusic.destroy();
-            this.scene.start('FinDelJuego');
-            //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
-        }
-        
-        
         
     }
 
@@ -184,7 +188,7 @@ class Escena1 extends Phaser.Scene {
     
         // Creamos enemigos
         for (let i = 0; i < 10; i++) {
-            let enemyX = Phaser.Math.Between(650, 750);
+            let enemyX = Phaser.Math.Between(900, 1100);
             let enemyY = Phaser.Math.Between(25, 550);
     
             enemy = this.enemiesGroup.create(enemyX, enemyY, 'enemy');
@@ -215,39 +219,16 @@ class Escena1 extends Phaser.Scene {
 
     }
 
-    
-    hitBomb(player, bomb) {
-        this.physics.pause();
-        player.setTint(0xff0000);
-        player.anims.play('turn');
-        this.scene.start('FinDelJuego')   // llama a otra escena 
-    }
-
-   //colision entre el jugador y el enemigo 
-    hitEnemy(player,enemy){
-        this.vida -=10;
-        this.vida.setText('vida:'+ this.vida);
-    }
-
-
-
-
-
-
-
- 
-
 
     // funcion de disparo 
     //faltaria agregar la funcion de colision entre bala y enemigo
     shoot() {
-        
+
         if (!this.balaGroup) {
             this.balaGroup=this.physics.add.group();
         }
-
         
-        let bala = this.balaGroup.create(this.player.x, this.player.y, 'disparo')
+        let bala = this.balaGroup.create(this.player.x, this.player.y, 'disparo');
 
         let velocidadBala = 300;
         bala.setScale(0.05);
@@ -259,9 +240,6 @@ class Escena1 extends Phaser.Scene {
 
         this.physics.add.overlap(bala, this.enemiesGroup, this.ColisionEnemyBala, null, this)
         //console.log("Disparo realizado");
-        
-        
-    
     }
     //Colisión entre la bala y el enemigo
     ColisionEnemyBala(bala,enemy) {
@@ -289,10 +267,10 @@ class Escena1 extends Phaser.Scene {
         // Hace que el enemigo se destruya cuando sale de la pantalla
         //enemy.outOfBoundsKill = true; 
 
-         /*
+         
         this.score += 10;
         this.scoreText.setText('Score: ' + this.score);
-            */
+        
     }
 
 }
