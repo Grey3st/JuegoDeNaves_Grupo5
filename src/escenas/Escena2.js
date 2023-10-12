@@ -55,6 +55,8 @@ class Escena2 extends Phaser.Scene {
             repeat:-1
         });
         
+        this.createParticulas();
+
 
         //this.enemy = this.physics.add.group();
         //this.physics.add.collider(this.player, this.enemy);
@@ -119,12 +121,13 @@ class Escena2 extends Phaser.Scene {
     update() {
 
         
-        //si llega a puntaje 100 pasa de nivel
-       // if (this.score == 400) {
-         //   this.scene.start('Escena2');
-           // this.scene.start('Escena2',{score:this.score});
-            //console.log("cambio escena");
-       //} 
+        //si llega a puntaje 400 pasa de nivel
+       if (this.score == 400) {
+            this.scene.start('Ganador');
+            this.scene.start('Ganador',{score:this.score});
+            this.gameMusic.destroy();
+            console.log("cambio escena");
+       } 
 
                 //si pierde todas las vidas
                 if (this.vida == 0) {
@@ -191,7 +194,14 @@ class Escena2 extends Phaser.Scene {
             let enemyX = Phaser.Math.Between(800, 1100);
             let enemyY = Phaser.Math.Between(25, 550);
             
+            /**variables para dar efecto que se mueven los enemigos */
+            let velocidadX = Phaser.Math.Between(-50, -200);//-200; 
+            let velocidadY = Phaser.Math.Between(-50, 50);
+
             enemy = this.enemiesGroup.create(enemyX, enemyY, 'enemy');
+            
+            /**le damos a enemy la velocidad con las variables anteriores */
+            enemy.setVelocity(velocidadX, velocidadY);
 
             for (let j = 0; j < 3; j++) {
                 enemy.setVelocityX(velocidad);
@@ -279,6 +289,23 @@ class Escena2 extends Phaser.Scene {
         this.score += 10;
         this.scoreText.setText('Score: ' + this.score);
         
+    }
+    createParticulas(){
+        let particles = this.add.particles(-10, 0, 'red', {
+
+            speed: 100,
+            angle: { min: 50, max: 280 },
+            scale: { start: 1, end: 0 },
+            blendMode: 'ADD',
+            callback:this.createParticulas,
+            callbackScope:this,
+            /*speed: 100,
+            angle: { min: 150, max: 210 },
+            scale: { start: 1, end: 0 },
+            blendMode: 'ADD'*/
+        });
+
+        particles.startFollow(this.player);
     }
 
 }

@@ -30,9 +30,10 @@ class Escena1 extends Phaser.Scene {
             }
         });
 
+        
     
         this.gameMusic = this.sound.add('gameMusic');
-        this.gameMusic.play();
+        this.gameMusic.play();  
 
         this.add.image(400, 300, 'sky');
         //--------------------------------------------//
@@ -45,8 +46,6 @@ class Escena1 extends Phaser.Scene {
         //this.enemy.create(258,250,'enemy')
         //this.enemy=this.physics.add.image(600,300,"enemy");
 
-        /*Metodo para repetir eventos */
-        //this.crearEnemigos();
         this.time.addEvent({
             delay:3000,
             callback:this.crearEnemigos,
@@ -54,7 +53,18 @@ class Escena1 extends Phaser.Scene {
             repeat:-1
         });
         
-
+        this.createParticulas();
+        /*this.time.addEvent({
+            
+            speed: 200,
+            angle: { min: 50, max: 280 },
+            scale: { start: 1, end: 0 },
+            blendMode: 'ADD',
+            callback:this.createParticulas,
+            callbackScope:this,
+            
+        })*/
+        
 
         //this.enemy = this.physics.add.group();
         //this.physics.add.collider(this.player, this.enemy);
@@ -271,6 +281,24 @@ class Escena1 extends Phaser.Scene {
         this.score += 10;
         this.scoreText.setText('Score: ' + this.score);
         
+    }
+
+    createParticulas(){
+        let particles = this.add.particles(-10, 0, 'red', {
+
+            speed: 100,
+            angle: { min: 50, max: 280 },
+            scale: { start: 1, end: 0 },
+            blendMode: 'ADD',
+            callback:this.createParticulas,
+            callbackScope:this,
+            /*speed: 100,
+            angle: { min: 150, max: 210 },
+            scale: { start: 1, end: 0 },
+            blendMode: 'ADD'*/
+        });
+
+        particles.startFollow(this.player);
     }
 
 }
