@@ -18,6 +18,7 @@ class Escena1 extends Phaser.Scene {
         this.load.image('disparo', '../public/img/disparo.png')
         this.load.spritesheet('nave', '../public/img/nave.png', { frameWidth: 70, frameHeight: 62 });
         this.load.audio('gameMusic', '../public/sound/gamePlay.mp3');
+        this.load.image('shootEnemy', '../public/img/shootEnemy.png');
 
     }
 
@@ -49,6 +50,13 @@ class Escena1 extends Phaser.Scene {
         this.time.addEvent({
             delay:3000,
             callback:this.crearEnemigos,
+            callbackScope:this,
+            repeat:-1
+        });
+
+        this.time.addEvent({
+            delay:3000,
+            callback:this.crearBalas,
             callbackScope:this,
             repeat:-1
         });
@@ -221,6 +229,45 @@ class Escena1 extends Phaser.Scene {
         console.log("colision");
         /*al detectar colision entre player y enemy, desaparecen enemy */
         enemy.disableBody(true,true);
+        this.vida -= 10;
+        this.vidaText.setText('Vida: ' + this.vida);
+        /*star.disableBody(true, true);
+        this.score += 10;
+        this.scoreText.setText('Score: ' + this.score);*/
+
+    }
+
+    crearBalas(){
+        let enemyShoot;
+        if (!this.enemiesShootGroup) {
+            this.enemiesShootGroup = this.physics.add.group();
+        }
+    
+        // Creamos enemigos
+        for (let i = 0; i < 10; i++) {
+            let enemyShootX = Phaser.Math.Between(900, 1100);
+            let enemyShootY = Phaser.Math.Between(25, 550);
+    
+            enemyShoot = this.enemiesShootGroup.create(enemyShootX, enemyShootY, 'shootEnemy');
+            enemyShoot.setVelocityX(-200);
+    
+            // Establecemos las colisiones y eventos para cada enemigo
+            this.physics.add.overlap(this.player, enemyShoot, this.ColisionEnemyShoot, null, this);
+    
+            enemyShoot.checkWorldBounds = true;
+            // Hace que el enemigo se destruya cuando sale de la pantalla
+            enemyShoot.outOfBoundsKill = true; 
+        }
+
+       
+    }
+
+    //Colisión entre el jugador y las estrellas
+    ColisionEnemyShoot(player,enemyShoot) {
+
+        console.log("colision");
+        /*al detectar colision entre player y enemy, desaparecen enemy */
+        enemyShoot.disableBody(true,true);
         this.vida -= 10;
         this.vidaText.setText('Vida: ' + this.vida);
         /*star.disableBody(true, true);

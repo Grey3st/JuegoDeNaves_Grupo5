@@ -54,6 +54,13 @@ class Escena2 extends Phaser.Scene {
             callbackScope:this,
             repeat:-1
         });
+
+        this.time.addEvent({
+            delay:3000,
+            callback:this.crearBalas,
+            callbackScope:this,
+            repeat:-1
+        });
         
         this.createParticulas();
 
@@ -121,8 +128,8 @@ class Escena2 extends Phaser.Scene {
     update() {
 
         
-        //si llega a puntaje 400 pasa de nivel
-       if (this.score == 400) {
+        //si llega a puntaje 1000 pasa de nivel
+       if (this.score == 1000) {
             this.scene.start('Ganador');
             this.scene.start('Ganador',{score:this.score});
             this.gameMusic.destroy();
@@ -290,6 +297,47 @@ class Escena2 extends Phaser.Scene {
         this.scoreText.setText('Score: ' + this.score);
         
     }
+
+    crearBalas(){
+        let enemyShoot;
+        if (!this.enemiesShootGroup) {
+            this.enemiesShootGroup = this.physics.add.group();
+        }
+    
+        // Creamos balas
+        for (let i = 0; i < 10; i++) {
+            let enemyShootX = Phaser.Math.Between(900, 1100);
+            let enemyShootY = Phaser.Math.Between(25, 550);
+    
+            enemyShoot = this.enemiesShootGroup.create(enemyShootX, enemyShootY, 'shootEnemy');
+            enemyShoot.setVelocityX(-300);
+    
+            // Establecemos las colisiones y eventos para cada enemigo
+            this.physics.add.overlap(this.player, enemyShoot, this.ColisionEnemyShoot, null, this);
+    
+            enemyShoot.checkWorldBounds = true;
+            // Hace que el enemigo se destruya cuando sale de la pantalla
+            enemyShoot.outOfBoundsKill = true; 
+        }
+
+       
+    }
+
+    //Colisión entre el jugador y las estrellas
+    ColisionEnemyShoot(player,enemyShoot) {
+
+        console.log("colision");
+        /*al detectar colision entre player y enemy, desaparecen enemy */
+        enemyShoot.disableBody(true,true);
+        this.vida -= 10;
+        this.vidaText.setText('Vida: ' + this.vida);
+        /*star.disableBody(true, true);
+        this.score += 10;
+        this.scoreText.setText('Score: ' + this.score);*/
+
+    }
+
+
     createParticulas(){
         let particles = this.add.particles(-10, 0, 'red', {
 
