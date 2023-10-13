@@ -18,7 +18,7 @@ class Escena2 extends Phaser.Scene {
         this.load.image('shoot', '../public/img/shoot.png');
         this.load.image('disparo', '../public/img/disparo.png')
         this.load.spritesheet('nave', '../public/img/nave.png', { frameWidth: 70, frameHeight: 62 });
-        this.load.audio('gameMusic', '../public/sound/gamePlay.mp3');
+        this.load.audio('gameMusic2', '../public/sound/gamePlay2.mp3');
 
     }
 
@@ -32,8 +32,8 @@ class Escena2 extends Phaser.Scene {
         });
 
     
-        this.gameMusic = this.sound.add('gameMusic');
-        this.gameMusic.play();
+        this.gameMusic2 = this.sound.add('gameMusic2');
+        this.gameMusic2.play();
 
         this.add.image(400, 300, 'sky2');
         //--------------------------------------------//
@@ -111,9 +111,9 @@ class Escena2 extends Phaser.Scene {
         
 
         //Para controlar el puntaje
-        this.scoreText = this.add.text(16, 16, 'score: '+ this.score, { fontSize: '32px', fill: '#000' });
+        this.scoreText = this.add.text(16, 16, 'score: '+ this.score, { fontSize: '32px', fill: '#FFF' });
         //se crea el puntaje 
-        this.vidaText = this.add.text(16,50,'Vida: 100',{fontSize : '32px',fill: '#000'});
+        this.vidaText = this.add.text(16,50,'Vida: 100',{fontSize : '32px',fill: '#FFF'});
         //Para agregar las bombas
         //this.bombs = this.physics.add.group();
         //this.physics.add.collider(this.bombs, this.platforms);
@@ -129,10 +129,10 @@ class Escena2 extends Phaser.Scene {
 
         
         //si llega a puntaje 1000 pasa de nivel
-       if (this.score == 1000) {
+       if (this.score == 3000) {
             this.scene.start('Ganador');
             this.scene.start('Ganador',{score:this.score});
-            this.gameMusic.destroy();
+            this.gameMusic2.destroy();
             console.log("cambio escena");
        } 
 
@@ -140,7 +140,7 @@ class Escena2 extends Phaser.Scene {
                 if (this.vida == 0) {
             
                     this.scene.start('FinDelJuego');
-                    this.gameMusic.destroy();
+                    this.gameMusic2.destroy();
                     console.log("game over");
                     //this.scene.start('End',{puntaje:this.puntaje}); PARA LLEVAR EL PUNTAJE
                 }
@@ -197,7 +197,7 @@ class Escena2 extends Phaser.Scene {
         }
         let velocidad = -200;
         // Creamos enemigos
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
             let enemyX = Phaser.Math.Between(800, 1100);
             let enemyY = Phaser.Math.Between(25, 550);
             
@@ -304,7 +304,7 @@ class Escena2 extends Phaser.Scene {
         }
     
         // Creamos balas
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
             let enemyShootX = Phaser.Math.Between(900, 1100);
             let enemyShootY = Phaser.Math.Between(25, 550);
     
