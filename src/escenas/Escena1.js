@@ -11,7 +11,7 @@ class Escena1 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('sky', '../public/img/sky.png');
+        this.load.image('sky', '../public/img/sky.jpg');
         this.load.image('enemy', '../public/img/enemy.png');
         this.load.image('red', '../public/img/red.png');
         this.load.image('shoot', '../public/img/shoot.png');

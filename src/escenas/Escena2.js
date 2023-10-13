@@ -12,7 +12,7 @@ class Escena2 extends Phaser.Scene {
         this.score = data.score;
     }
     preload() {
-        this.load.image('sky', '../public/img/fondoInicio.png');
+        this.load.image('sky2', '../public/img/sky2.png'); 
         this.load.image('enemy', '../public/img/enemy.png');
         this.load.image('red', '../public/img/red.png');
         this.load.image('shoot', '../public/img/shoot.png');
@@ -35,7 +35,7 @@ class Escena2 extends Phaser.Scene {
         this.gameMusic = this.sound.add('gameMusic');
         this.gameMusic.play();
 
-        this.add.image(400, 300, 'sky');
+        this.add.image(400, 300, 'sky2');
         //--------------------------------------------//
         // this.add.image(400, 300, 'star');    crea una estrella estatica en el escenario 
         this.player = this.physics.add.sprite(100, 100, 'nave');
@@ -285,7 +285,6 @@ class Escena2 extends Phaser.Scene {
         // Hace que el enemigo se destruya cuando sale de la pantalla
         //enemy.outOfBoundsKill = true; 
 
-         
         this.score += 10;
         this.scoreText.setText('Score: ' + this.score);
         
