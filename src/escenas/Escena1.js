@@ -137,7 +137,7 @@ class Escena1 extends Phaser.Scene {
     update() {
 
                         //si llega a puntaje 1000 pasa de nivel
-                        if (this.score == 1000) {
+                        if (this.score == 200) {
                             this.gameMusic.destroy();
                             this.scene.start('Escena2',{score:this.score});
                             console.log("cambio escena");
@@ -169,20 +169,26 @@ class Escena1 extends Phaser.Scene {
             this.player.setVelocityX(0);
             this.player.anims.play('up', true);
         }
-        if (this.cursors.down.isDown) {
+        else if(this.cursors.down.isDown) {
             this.player.setVelocityY(160);
             this.player.setVelocityX(0);
             this.player.anims.play('down', true);
+        }else{              //evita que se mueva al dejar de presionar la tecla correspondiente 
+ 
+            this.player.setVelocityY(1);
         }
         if (this.cursors.left.isDown) {
             this.player.setVelocityX(-160);
             this.player.setVelocityY(0);
             this.player.anims.play('left', true);
         }
-        if (this.cursors.right.isDown) {
+        else if (this.cursors.right.isDown) {
             this.player.setVelocityX(160);
             this.player.setVelocityY(0);
             this.player.anims.play('right', true);
+        }else{
+                  this.player.setVelocityX(0)
+
         }
         //4 diagonales de la nave
         if (this.cursors.up.isDown && (this.cursors.right.isDown || this.cursors.left.isDown)) {
@@ -209,7 +215,7 @@ class Escena1 extends Phaser.Scene {
             let enemyX = Phaser.Math.Between(900, 1100);
             let enemyY = Phaser.Math.Between(25, 550);
     
-            enemy = this.enemiesGroup.create(enemyX, enemyY, 'enemy');
+            enemy = this.enemiesGroup.create(enemyX, enemyY,'enemy');
             enemy.setVelocityX(-100);
     
             // Establecemos las colisiones y eventos para cada enemigo
@@ -241,7 +247,7 @@ class Escena1 extends Phaser.Scene {
         let enemyShoot;
         if (!this.enemiesShootGroup) {
             this.enemiesShootGroup = this.physics.add.group();
-        }
+        } 
     
         // Creamos enemigos
         for (let i = 0; i < 10; i++) {

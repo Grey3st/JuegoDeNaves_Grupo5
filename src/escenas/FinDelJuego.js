@@ -20,7 +20,28 @@ class FinDelJuego extends Phaser.Scene {
         //---//
         let fin = this.add.image(centerX, centerY, 'fin');
         fin.setScale(0.2)
+        fin.setInteractive();
+
+        /*fin.on('pointerdown', function () {
+            this.cambiarEscena(); // Llama a la función cambiarEscena
+            console.log("¡El juego ha comenzado!");
+        }, this); 
+
+        fin.on('pointerover', function () {
+            document.body.style.cursor = 'pointer';
+        });
+
+        fin.on('pointerout', function () {
+            document.body.style.cursor = 'default';
+        }); */
+
+
     }
+     /*cambiarEscena() {
+        //cambiar a la siguiente escena
+        this.scene.start('InicioJuego');
+
+    } */
 
 }
 export default FinDelJuego;
