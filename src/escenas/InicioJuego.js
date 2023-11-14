@@ -50,7 +50,7 @@ class InicioJuego extends Phaser.Scene {
 
         // Define una función para manejar el evento de clic en el botón
         boton.on('pointerdown', function () {
-            this.cambiarEscena(); // Llama a la función cambiarEscena
+            this.Escena(); // Llama a la función cambiarEscena
             //  iniciar juego/cambiar escena aquí
             console.log("¡El juego ha comenzado!");
         }, this); // 'this' para hacer referencia a la escena actual sino no permite acceder a la wea de escena 
@@ -65,7 +65,7 @@ class InicioJuego extends Phaser.Scene {
         });
         }
         
-    cambiarEscena() {
+    Escena() {
         //cambiar a la siguiente escena
         this.scene.start('Escena1');
         this.musicaMenu.destroy();

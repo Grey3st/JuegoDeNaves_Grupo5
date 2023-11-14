@@ -49,7 +49,7 @@ class Escena2 extends Phaser.Scene {
         /*Metodo para repetir eventos */
         //this.crearEnemigos();
         this.time.addEvent({
-            delay:3000,
+            delay:2000,
             callback:this.crearEnemigos,
             callbackScope:this,
             repeat:-1
@@ -127,9 +127,8 @@ class Escena2 extends Phaser.Scene {
     //------------------------//
     update() {
 
-        
         //si llega a puntaje 1000 pasa de nivel
-       if (this.score == 3000) {
+       if (this.score == 500) {
             this.scene.start('Ganador');
             this.scene.start('Ganador',{score:this.score});
             this.gameMusic2.destroy();
@@ -162,20 +161,26 @@ class Escena2 extends Phaser.Scene {
             this.player.setVelocityX(0);
             this.player.anims.play('up', true);
         }
-        if (this.cursors.down.isDown) {
+        else if(this.cursors.down.isDown) {
             this.player.setVelocityY(160);
             this.player.setVelocityX(0);
             this.player.anims.play('down', true);
+        }else{              //evita que se mueva al dejar de presionar la tecla correspondiente 
+ 
+            this.player.setVelocityY(0);
         }
         if (this.cursors.left.isDown) {
             this.player.setVelocityX(-160);
             this.player.setVelocityY(0);
             this.player.anims.play('left', true);
         }
-        if (this.cursors.right.isDown) {
+        else if (this.cursors.right.isDown) {
             this.player.setVelocityX(160);
             this.player.setVelocityY(0);
             this.player.anims.play('right', true);
+        }else{
+                  this.player.setVelocityX(0)
+
         }
         //4 diagonales de la nave
         if (this.cursors.up.isDown && (this.cursors.right.isDown || this.cursors.left.isDown)) {
